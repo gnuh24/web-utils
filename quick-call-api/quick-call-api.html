@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>🧪 API Tester Pro - CORS & JWT</title>
+    <style>
+        body {
+            font-family: Inter, Roboto, Arial, sans-serif;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+            background: #fafafa;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 6px;
+            border: none;
+            background: #1976d2;
+            color: white;
+        }
+
+        button:hover {
+            background: #1565c0;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 12px;
+            border-radius: 6px;
+            overflow: auto;
+            max-height: 400px;
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ok {
+            color: #0b6623;
+            font-weight: 600;
+        }
+
+        .error {
+            color: #b00020;
+            font-weight: 600;
+        }
+
+        .muted {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .history {
+            margin-top: 20px;
+        }
+
+        .history ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .history li {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 6px 10px;
+            margin-bottom: 5px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history small {
+            color: #888;
+        }
+
+        .danger {
+            background: #d32f2f !important;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 API Tester Pro - CORS & JWT</h1>
+
+    <form id="apiForm">
+        <label for="url">🔗 URL API</label>
+        <input id="url" type="text" placeholder="https://localhost:8080/api/test" value="http://localhost:8080/api/test"
+            required />
+
+        <label for="method">⚙️ Phương thức</label>
+        <select id="method">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+            <option value="PATCH">PATCH</option>
+        </select>
+
+        <label for="token">🔐 JWT Token (tùy chọn)</label>
+        <input id="token" type="text" placeholder="Bearer eyJhbGciOi..." />
+
+        <label for="body">📦 Body (JSON nếu có)</label>
+        <textarea id="body" rows="5" placeholder='{"key":"value"}'></textarea>
+
+        <div class="row">
+            <button type="submit">🚀 Gửi yêu cầu</button>
+            <button type="button" id="openRaw">🌐 Mở tab</button>
+            <button type="button" id="downloadLog" class="danger">💾 Tải log</button>
+            <span id="notice" class="muted">Phản hồi sẽ hiển thị bên dưới.</span>
+        </div>
+    </form>
+
+    <h2>📊 Kết quả</h2>
+    <div><strong>Trạng thái:</strong> <span id="status" class="muted">—</span></div>
+    <div><strong>Headers phản hồi:</strong></div>
+    <pre id="headers">—</pre>
+    <div><strong>Body phản hồi:</strong></div>
+    <pre id="response">—</pre>
+
+    <div class="history">
+        <h2>🕓 Lịch sử API gần đây</h2>
+        <ul id="historyList">—</ul>
+    </div>
+
+    <script>
+        const form = document.getElementById("apiForm");
+        const urlInput = document.getElementById("url");
+        const methodInput = document.getElementById("method");
+        const bodyInput = document.getElementById("body");
+        const tokenInput = document.getElementById("token");
+        const statusEl = document.getElementById("status");
+        const headersEl = document.getElementById("headers");
+        const responseEl = document.getElementById("response");
+        const openRaw = document.getElementById("openRaw");
+        const downloadLogBtn = document.getElementById("downloadLog");
+        const historyList = document.getElementById("historyList");
+
+        let history = JSON.parse(localStorage.getItem("api_history") || "[]");
+
+        function updateHistory() {
+            historyList.innerHTML = history.length
+                ? history.map((h, i) =>
+                    `<li>
+            <div><strong>${h.method}</strong> ${h.url} <br><small>${h.time}</small></div>
+            <button onclick="loadHistory(${i})">🔁</button>
+          </li>`
+                ).join("")
+                : "<li>— Chưa có lịch sử —</li>";
+        }
+
+        function saveHistory(item) {
+            history.unshift(item);
+            history = history.slice(0, 10);
+            localStorage.setItem("api_history", JSON.stringify(history));
+            updateHistory();
+        }
+
+        window.loadHistory = (i) => {
+            const item = history[i];
+            if (!item) return;
+            urlInput.value = item.url;
+            methodInput.value = item.method;
+            tokenInput.value = item.token || "";
+            bodyInput.value = item.body || "";
+        };
+
+        openRaw.addEventListener("click", () => {
+            const url = urlInput.value.trim();
+            if (url) window.open(url, "_blank");
+        });
+
+        downloadLogBtn.addEventListener("click", () => {
+            const blob = new Blob([JSON.stringify(history, null, 2)], { type: "application/json" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "api-test-history.json";
+            link.click();
+        });
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const url = urlInput.value.trim();
+            const method = methodInput.value;
+            const bodyText = bodyInput.value.trim();
+            const token = tokenInput.value.trim();
+
+            statusEl.textContent = "⏳ Đang gửi...";
+            statusEl.className = "muted";
+            headersEl.textContent = "—";
+            responseEl.textContent = "—";
+
+            try {
+                const options = { method, headers: {} };
+
+                if (token)
+                    options.headers["Authorization"] = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
+                if (bodyText && method !== "GET") {
+                    options.headers["Content-Type"] = "application/json";
+                    options.body = bodyText;
+                }
+
+                const resp = await fetch(url, options);
+                statusEl.textContent = `${resp.status} ${resp.statusText}`;
+                statusEl.className = resp.ok ? "ok" : "error";
+
+                const headers = [];
+                for (const [k, v] of resp.headers.entries()) headers.push(`${k}: ${v}`);
+                headersEl.textContent = headers.join("\n") || "—";
+
+                const ct = resp.headers.get("content-type") || "";
+                try {
+                    if (ct.includes("application/json")) {
+                        const data = await resp.json();
+                        responseEl.textContent = JSON.stringify(data, null, 2);
+                    } else {
+                        const text = await resp.text();
+                        responseEl.textContent = text.slice(0, 15000);
+                    }
+                } catch (parseErr) {
+                    responseEl.textContent = `⚠️ Không thể parse JSON:\n${parseErr}`;
+                }
+
+                saveHistory({ url, method, token, body: bodyText, time: new Date().toLocaleString() });
+            } catch (err) {
+                let msg = "❌ Lỗi không xác định.";
+                if (err.name === "TypeError") {
+                    msg = "❌ Lỗi mạng hoặc CORS — không thể kết nối tới server.";
+                } else if (err.name === "SyntaxError") {
+                    msg = "⚠️ Lỗi cú pháp JSON trong phần body hoặc phản hồi.";
+                } else if (err.message.includes("Failed to fetch")) {
+                    msg = "🌐 Không thể fetch API (server không phản hồi / HTTPS lỗi / CORS).";
+                }
+                statusEl.textContent = msg;
+                statusEl.className = "error";
+                responseEl.textContent = err.stack || err.toString();
+            }
+        });
+
+        updateHistory();
+    </script>
+</body>
+
+</html>
