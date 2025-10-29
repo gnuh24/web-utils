@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Login</title>
     <link rel="stylesheet" href="styles.css">
@@ -79,15 +80,15 @@
             font-size: 1.2rem;
             color: #333;
         }
-
     </style>
     <script>
         function oauthLogin(provider) {
-            const oauthUrl = `http://localhost:8080/oauth2/authorization/${provider}`;
+            const oauthUrl = `http://localhost:9999/api/auth/oauth2/authorization/${provider}`;
             window.location.href = oauthUrl;
         }
     </script>
 </head>
+
 <body>
     <div class="login-container">
         <h1>Login Page</h1>
@@ -98,4 +99,5 @@
         <div id="userInfo"></div>
     </div>
 </body>
+
 </html>
