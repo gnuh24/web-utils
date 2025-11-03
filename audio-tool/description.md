@@ -1,20 +1,39 @@
-Dưới đây là file **`AUDIO_TOOL.md`** mô tả chức năng đầy đủ cho giao diện **Audio Tool — Modern Glow Player** mà bạn đang phát triển:
+Chuẩn bài luôn 😎 — bạn đang làm rất “chuẩn repo chuyên nghiệp”!
+Vậy ta sẽ **thêm mục “🧾 Lịch sử phiên bản (Changelog)”** ngay đầu file `AUDIO_TOOL.md`, liệt kê các thay đổi qua từng phiên bản (bảng timeline nhỏ gọn như changelog GitHub).
+
+Dưới đây là bản cập nhật **hoàn chỉnh**, có sẵn bảng version history 👇
 
 ---
 
 # 🎧 AUDIO TOOL — Modern Glow Player
 
+> **Ngôn ngữ:** HTML / CSS / JavaScript thuần
+> **Tác giả:** Web Utils Project
+> **Trạng thái:** Đang phát triển
+
+---
+
+## 🧾 Lịch sử phiên bản (Changelog)
+
+| Phiên bản | Ngày cập nhật | Mô tả thay đổi                                                                                                                                               |
+| --------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1.1**   | 04/11/2025    | ✨ Thêm tùy chỉnh **tốc độ phát (Playback Speed)** bằng thanh trượt và dropdown đồng bộ. <br> 🎨 Cải thiện CSS, tách style sang file riêng `audio-style.css`. |
+| **1.0**   | 28/10/2025    | 🚀 Ra mắt phiên bản đầu tiên: phát nhạc từ **URL hoặc file**, có **Play / Pause / Stop / Tua** và **phím tắt điều khiển**.                                   |
+
+---
+
 ## 🧩 1. Giới thiệu
 
-**Audio Tool** là một công cụ phát nhạc hiện đại được xây dựng hoàn toàn bằng **HTML, CSS và JavaScript thuần**.
-Giao diện được thiết kế theo phong cách **Glassmorphism & Glow UI**, mang lại cảm giác tương lai, mềm mại và trực quan.
+**Audio Tool** là công cụ phát nhạc hiện đại được xây dựng bằng **HTML, CSS, JavaScript thuần**.
+Giao diện theo phong cách **Glassmorphism + Glow UI**, tạo cảm giác mềm mại và tương lai.
 
 Ứng dụng cho phép:
 
 * Phát nhạc từ **file nội bộ** hoặc **URL trực tuyến**
-* **Điều khiển phát lại** (Play/Pause, Stop, Tua nhanh/chậm)
-* **Hiển thị thời gian & tiến trình phát nhạc**
-* **Tương tác trực tiếp bằng chuột hoặc phím tắt**
+* **Điều khiển phát lại** (Play / Pause / Stop / Tua)
+* Hiển thị **thời gian và tiến trình phát nhạc**
+* **Tùy chỉnh tốc độ phát (Playback rate)**
+* **Tương tác bằng chuột hoặc phím tắt**
 
 ---
 
@@ -22,46 +41,53 @@ Giao diện được thiết kế theo phong cách **Glassmorphism & Glow UI**, 
 
 ### 🎵 2.1. Nguồn nhạc
 
-* **Tùy chọn 1:** Dán **URL** của file âm thanh vào ô nhập → Nhấn **Load** để tải.
-* **Tùy chọn 2:** Nhấn **Chọn file** → Chọn file `.mp3`, `.wav`, `.ogg`, v.v. từ máy tính.
+* **Tùy chọn 1:** Dán **URL** âm thanh → nhấn **Load** để phát.
+* **Tùy chọn 2:** Nhấn **Chọn file** → tải file `.mp3`, `.wav`, `.ogg`...
 
-> Khi file được tải, trình phát tự động bắt đầu phát nhạc.
+> Khi tải thành công, nhạc tự động phát.
 
 ---
 
 ### ⏯ 2.2. Điều khiển phát lại
 
-| Nút    | Biểu tượng | Chức năng                               |
-| ------ | ---------- | --------------------------------------- |
-| ⏪      | `rew5`     | Tua ngược **5 giây**                    |
-| ▶ / ❚❚ | `play`     | **Phát / Tạm dừng**                     |
-| ⏩      | `fwd5`     | Tua nhanh **5 giây**                    |
-| ⏹      | `stop`     | Dừng phát và đưa về thời gian **00:00** |
+| Nút    | Biểu tượng | Chức năng                   |
+| ------ | ---------- | --------------------------- |
+| ⏪      | rew5       | Tua ngược **5 giây**        |
+| ▶ / ❚❚ | play       | **Phát / Tạm dừng**         |
+| ⏩      | fwd5       | Tua nhanh **5 giây**        |
+| ⏹      | stop       | Dừng phát, đưa về **00:00** |
 
 ---
 
 ### 🕒 2.3. Hiển thị thời gian
 
-* Phía dưới các nút điều khiển hiển thị:
-
-  ```
-  00:00 / 03:42
-  ```
-
-  → biểu thị **thời gian hiện tại / tổng thời gian bài hát**.
-* Tự động cập nhật theo tiến trình phát nhạc.
+* Hiển thị **thời gian hiện tại / tổng thời lượng** (vd: `00:42 / 03:27`)
+* Cập nhật **real-time** khi phát
+* Khi phát xong → trở lại **00:00**
 
 ---
 
 ### 📈 2.4. Thanh tiến trình
 
-* Thanh phát sáng màu **xanh lam neon** thể hiện tiến trình phát nhạc.
-* Có thể **click** vào thanh để tua đến vị trí mong muốn.
-* Ngoài ra còn có **slider range** giúp tua chính xác hơn.
+* Thanh phát sáng **xanh lam neon** hiển thị tiến độ
+* Có thể **click hoặc kéo** để tua
+* Tự động đồng bộ với âm thanh
 
 ---
 
-### ⌨️ 2.5. Phím tắt
+### ⏩ 2.5. Tốc độ phát (NEW in v1.1)
+
+* Cho phép thay đổi tốc độ từ **0.25× đến 2×** bằng:
+
+  * **Thanh trượt (range)** để điều chỉnh mượt
+  * **Danh sách chọn (dropdown)** để chọn nhanh
+* Hai thành phần đồng bộ với nhau — thay đổi một cái, cái kia cập nhật ngay.
+
+> 🎯 Hữu ích cho việc **nghe học ngoại ngữ** hoặc **tua nhanh nội dung**.
+
+---
+
+### ⌨️ 2.6. Phím tắt
 
 | Phím      | Hành động        |
 | --------- | ---------------- |
@@ -70,68 +96,46 @@ Giao diện được thiết kế theo phong cách **Glassmorphism & Glow UI**, 
 | **→**     | Tua nhanh 5 giây |
 | **S**     | Dừng phát        |
 
-> Các phím tắt bị vô hiệu khi đang nhập văn bản trong ô URL.
+> Bị vô hiệu khi đang nhập trong ô URL.
 
 ---
 
-### 💡 2.6. Trạng thái hiển thị
+### 💡 2.7. Trạng thái hiển thị
 
-* Nút **Play** tự động đổi biểu tượng khi phát hoặc tạm dừng.
-* Tiến trình và thời gian được cập nhật **real-time**.
-* Khi phát xong bài nhạc → nút chuyển lại thành **▶**.
+* Nút **Play/Pause** tự động đổi icon
+* Tiến trình, thời gian và tốc độ cập nhật **real-time**
+* Khi bài nhạc kết thúc → reset về ban đầu
 
 ---
 
 ## 🎨 3. Giao diện (UI/UX)
 
-* **Hiệu ứng Glassmorphism:**
-
-  * Nền mờ (`backdrop-filter: blur(18px)`)
-  * Viền sáng mờ & đổ bóng nhẹ.
-* **Hiệu ứng Glow:**
-
-  * Nút bấm và thanh tiến trình có ánh sáng xanh (`#38bdf8`) khi hover.
-* **Tương thích mobile:**
-
-  * Tự động ẩn phần hiển thị thời gian khi màn hình nhỏ (<520px).
-  * Giao diện co giãn linh hoạt (`width: min(700px, 94%)`).
+* **Glassmorphism:** nền mờ, viền sáng nhẹ
+* **Glow Effect:** ánh sáng neon xanh `#38bdf8`
+* **Responsive:** tự co giãn trên màn hình nhỏ, ẩn bớt thông tin khi <520px
+* **Layout:** gọn gàng, cân đối, trực quan
 
 ---
 
-## 🧠 4. Kịch bản hoạt động
-
-1. Người dùng chọn nguồn (URL hoặc file).
-2. Âm thanh được tải và phát.
-3. Giao diện cập nhật tiến trình và thời gian.
-4. Người dùng có thể:
-
-   * Dừng / tua / phát / pause
-   * Click hoặc kéo thanh tua
-   * Sử dụng phím tắt để điều khiển
-5. Khi nhạc kết thúc → tiến trình về 0%.
-
----
-
-## 📁 5. Cấu trúc file
+## 📁 4. Cấu trúc file
 
 ```
 audio-tool/
 │
-├── audio-tool.html      # File chính chứa toàn bộ mã HTML + CSS + JS
-├── description.md        # File mô tả chức năng (hiện tại)
-└── assets/              # (Tùy chọn) Lưu nhạc mẫu hoặc icon
+├── audio-tool.html       # File chính (HTML + JS)
+├── audio-style.css        # File CSS (Glassmorphism + Glow)
+└── AUDIO_TOOL.md          # File mô tả & changelog
 ```
 
 ---
 
-## 🔮 6. Hướng phát triển trong tương lai
+## 🔮 5. Hướng phát triển
 
-* Thêm **Equalizer hiển thị sóng âm (visualizer)**.
-* Hỗ trợ **Playlist** (nhiều bài nhạc).
-* Tùy chỉnh **tốc độ phát (Playback rate)**.
-* Lưu lại bài hát đã phát gần đây (LocalStorage).
+* [ ] Equalizer hiển thị sóng âm (Visualizer)
+* [ ] Hỗ trợ Playlist (nhiều bài nhạc liên tiếp)
+* [x] Điều chỉnh tốc độ phát (hoàn thành v1.1)
+* [ ] Lưu lịch sử bài hát (LocalStorage)
+* [ ] Thêm chế độ Dark / Light
 
 ---
 
-Bạn có muốn tôi **tạo sẵn file `AUDIO_TOOL.md` để tải về** (dạng `.md`) không?
-Nếu đồng ý, tôi sẽ xuất file Markdown hoàn chỉnh cho bạn.
