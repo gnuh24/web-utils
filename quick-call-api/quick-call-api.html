@@ -112,8 +112,8 @@
 
     <form id="apiForm">
         <label for="url">🔗 URL API</label>
-        <input id="url" type="text" placeholder="https://localhost:8080/api/test" value="http://localhost:8080/api/test"
-            required />
+        <input id="url" type="text" placeholder="http://127.0.0.1:8080/api/auth/v1/check-email?email=user1@gmail.com"
+            value="http://127.0.0.1:8080/api/auth/v1/check-email?email=user1@gmail.com" required />
 
         <label for="method">⚙️ Phương thức</label>
         <select id="method">
@@ -125,7 +125,8 @@
         </select>
 
         <label for="token">🔐 JWT Token (tùy chọn)</label>
-        <input id="token" type="text" placeholder="Bearer eyJhbGciOi..." />
+        <input id="token" type="text" placeholder="Bearer eyJhbGciOi..."
+            value="eyJhbGciOiJIUzI1NiJ9.eyJ0eXAiOiJhY2Nlc3MiLCJzdWIiOiJ1c2VyMUBnbWFpbC5jb20iLCJpYXQiOjE3NTk0OTI2NDEsImV4cCI6MTc2MjA4NDY0MX0._-OZeIjgj6JRUtBdK4SuPrYc9LC3s3qduF9MmUVryGQ" />
 
         <label for="body">📦 Body (JSON nếu có)</label>
         <textarea id="body" rows="5" placeholder='{"key":"value"}'></textarea>
@@ -250,6 +251,7 @@
 
                 saveHistory({ url, method, token, body: bodyText, time: new Date().toLocaleString() });
             } catch (err) {
+                console.log(err)
                 let msg = "❌ Lỗi không xác định.";
                 if (err.name === "TypeError") {
                     msg = "❌ Lỗi mạng hoặc CORS — không thể kết nối tới server.";

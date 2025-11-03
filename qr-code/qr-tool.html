@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>QR Tool — Scan / Decode / Generate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        video,
+        canvas {
+            width: 100%;
+            border-radius: .5rem;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800">
+    <div class="max-w-3xl mx-auto p-5">
+        <h1 class="text-xl font-bold mb-4">📷 QR Tool</h1>
+
+        <div class="bg-white p-4 rounded shadow mb-5">
+            <h2 class="font-semibold mb-2">1️⃣ Quét QR từ webcam</h2>
+            <div class="flex gap-2 mb-2">
+                <button id="btnStart" class="bg-emerald-500 text-white px-3 py-1 rounded">Bắt đầu</button>
+                <button id="btnStop" class="bg-gray-400 text-white px-3 py-1 rounded">Dừng</button>
+            </div>
+            <video id="video" autoplay playsinline muted></video>
+            <canvas id="canvas" hidden></canvas>
+            <pre id="result" class="bg-slate-100 p-2 mt-3 rounded text-sm overflow-auto h-20"></pre>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow mb-5">
+            <h2 class="font-semibold mb-2">2️⃣ Upload ảnh để giải mã</h2>
+            <input type="file" id="fileInput" accept="image/*" class="mb-3">
+            <canvas id="imgCanvas" class="border rounded"></canvas>
+            <pre id="fileResult" class="bg-slate-100 p-2 mt-3 rounded text-sm overflow-auto h-20"></pre>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow">
+            <h2 class="font-semibold mb-2">3️⃣ Tạo QR Code</h2>
+            <textarea id="qrText" rows="3" class="w-full border rounded p-2 mb-3"
+                placeholder="Nhập nội dung cần tạo QR..."></textarea>
+            <button id="btnGen" class="bg-indigo-500 text-white px-3 py-1 rounded">Tạo QR</button>
+            <div id="qrcode" class="mt-3"></div>
+        </div>
+
+        <footer class="text-xs text-gray-500 mt-4">Phiên bản 1.0 — Cập nhật 03/11/2025</footer>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const resultEl = document.getElementById('result');
+        let stream = null, loopId = null;
+
+        // --- Webcam scan ---
+        document.getElementById('btnStart').onclick = async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                video.srcObject = stream;
+                loopScan();
+            } catch (e) {
+                alert('Không thể mở webcam: ' + e);
+            }
+        };
+
+        document.getElementById('btnStop').onclick = () => {
+            if (stream) stream.getTracks().forEach(t => t.stop());
+            cancelAnimationFrame(loopId);
+            resultEl.textContent = '';
+        };
+
+        function loopScan() {
+            loopId = requestAnimationFrame(loopScan);
+            if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const qr = jsQR(imgData.data, imgData.width, imgData.height);
+            if (qr) {
+                resultEl.textContent = qr.data;
+            }
+        }
+
+        // --- File decode ---
+        const fileInput = document.getElementById('fileInput');
+        const imgCanvas = document.getElementById('imgCanvas');
+        const ictx = imgCanvas.getContext('2d');
+        fileInput.onchange = e => {
+            const f = e.target.files[0];
+            if (!f) return;
+            const img = new Image();
+            img.onload = () => {
+                imgCanvas.width = img.width;
+                imgCanvas.height = img.height;
+                ictx.drawImage(img, 0, 0);
+                const data = ictx.getImageData(0, 0, img.width, img.height);
+                const qr = jsQR(data.data, data.width, data.height);
+                document.getElementById('fileResult').textContent = qr ? qr.data : '❌ Không tìm thấy QR code.';
+            };
+            img.src = URL.createObjectURL(f);
+        };
+
+        // --- QR Generator ---
+        document.getElementById('btnGen').onclick = () => {
+            const txt = document.getElementById('qrText').value.trim();
+            if (!txt) return alert('Nhập nội dung để tạo QR');
+            const div = document.getElementById('qrcode');
+            div.innerHTML = '';
+            new QRCode(div, { text: txt, width: 200, height: 200 });
+        };
+    </script>
+</body>
+
+</html>
