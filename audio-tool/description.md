@@ -1,7 +1,4 @@
-Chuẩn bài luôn 😎 — bạn đang làm rất “chuẩn repo chuyên nghiệp”!
-Vậy ta sẽ **thêm mục “🧾 Lịch sử phiên bản (Changelog)”** ngay đầu file `AUDIO_TOOL.md`, liệt kê các thay đổi qua từng phiên bản (bảng timeline nhỏ gọn như changelog GitHub).
-
-Dưới đây là bản cập nhật **hoàn chỉnh**, có sẵn bảng version history 👇
+Tuyệt vời 😎 đây là bản cập nhật mới của file `AUDIO_TOOL.md` — **đã bổ sung mục “Playlist (NEW in v1.2)”** và cập nhật changelog chuẩn bài GitHub style:
 
 ---
 
@@ -17,6 +14,7 @@ Dưới đây là bản cập nhật **hoàn chỉnh**, có sẵn bảng version
 
 | Phiên bản | Ngày cập nhật | Mô tả thay đổi                                                                                                                                               |
 | --------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1.2**   | 07/11/2025    | 🧾 **Thêm Playlist** — hỗ trợ phát nhiều bài nhạc liên tiếp, tự động phát bài tiếp theo và cho phép chọn bài trực tiếp từ danh sách.                         |
 | **1.1**   | 04/11/2025    | ✨ Thêm tùy chỉnh **tốc độ phát (Playback Speed)** bằng thanh trượt và dropdown đồng bộ. <br> 🎨 Cải thiện CSS, tách style sang file riêng `audio-style.css`. |
 | **1.0**   | 28/10/2025    | 🚀 Ra mắt phiên bản đầu tiên: phát nhạc từ **URL hoặc file**, có **Play / Pause / Stop / Tua** và **phím tắt điều khiển**.                                   |
 
@@ -33,7 +31,8 @@ Giao diện theo phong cách **Glassmorphism + Glow UI**, tạo cảm giác mề
 * **Điều khiển phát lại** (Play / Pause / Stop / Tua)
 * Hiển thị **thời gian và tiến trình phát nhạc**
 * **Tùy chỉnh tốc độ phát (Playback rate)**
-* **Tương tác bằng chuột hoặc phím tắt**
+* **Danh sách phát (Playlist)**
+* **Phím tắt tiện dụng cho người dùng bàn phím**
 
 ---
 
@@ -41,10 +40,10 @@ Giao diện theo phong cách **Glassmorphism + Glow UI**, tạo cảm giác mề
 
 ### 🎵 2.1. Nguồn nhạc
 
-* **Tùy chọn 1:** Dán **URL** âm thanh → nhấn **Load** để phát.
-* **Tùy chọn 2:** Nhấn **Chọn file** → tải file `.mp3`, `.wav`, `.ogg`...
+* **Tùy chọn 1:** Dán **URL** âm thanh → nhấn **Tải URL** để thêm vào danh sách.
+* **Tùy chọn 2:** Nhấn **Chọn file** → tải 1 hoặc nhiều file `.mp3`, `.wav`, `.ogg`...
 
-> Khi tải thành công, nhạc tự động phát.
+> Khi tải thành công, file tự động được thêm vào **Playlist** và phát bài đầu tiên.
 
 ---
 
@@ -52,9 +51,11 @@ Giao diện theo phong cách **Glassmorphism + Glow UI**, tạo cảm giác mề
 
 | Nút    | Biểu tượng | Chức năng                   |
 | ------ | ---------- | --------------------------- |
-| ⏪      | rew5       | Tua ngược **5 giây**        |
+| Prev ⏮      | prevTrack  | Bài trước trong playlist    |
+| -5s      | rew5       | Tua ngược **5 giây**        |
 | ▶ / ❚❚ | play       | **Phát / Tạm dừng**         |
-| ⏩      | fwd5       | Tua nhanh **5 giây**        |
+| +5s     | fwd5       | Tua nhanh **5 giây**        |
+| Next ⏭      | nextTrack  | Bài tiếp theo               |
 | ⏹      | stop       | Dừng phát, đưa về **00:00** |
 
 ---
@@ -63,31 +64,44 @@ Giao diện theo phong cách **Glassmorphism + Glow UI**, tạo cảm giác mề
 
 * Hiển thị **thời gian hiện tại / tổng thời lượng** (vd: `00:42 / 03:27`)
 * Cập nhật **real-time** khi phát
-* Khi phát xong → trở lại **00:00**
+* Khi phát xong → tự động sang bài kế tiếp (nếu có)
 
 ---
 
 ### 📈 2.4. Thanh tiến trình
 
 * Thanh phát sáng **xanh lam neon** hiển thị tiến độ
-* Có thể **click hoặc kéo** để tua
-* Tự động đồng bộ với âm thanh
+* Có thể **click để tua** đến vị trí bất kỳ
+* Tự động đồng bộ với âm thanh đang phát
 
 ---
 
-### ⏩ 2.5. Tốc độ phát (NEW in v1.1)
+### ⏩ 2.5. Tốc độ phát (v1.1)
 
-* Cho phép thay đổi tốc độ từ **0.25× đến 2×** bằng:
+* Cho phép thay đổi tốc độ từ **0.25× đến 2×** qua:
 
   * **Thanh trượt (range)** để điều chỉnh mượt
   * **Danh sách chọn (dropdown)** để chọn nhanh
-* Hai thành phần đồng bộ với nhau — thay đổi một cái, cái kia cập nhật ngay.
 
-> 🎯 Hữu ích cho việc **nghe học ngoại ngữ** hoặc **tua nhanh nội dung**.
+> Hai thành phần này đồng bộ — thay đổi một, cái kia cập nhật ngay.
 
 ---
 
-### ⌨️ 2.6. Phím tắt
+### 📜 2.6. Playlist (NEW in v1.2)
+
+| Tính năng                     | Mô tả                                                                  |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| ➕ **Thêm bài**                | Khi người dùng chọn file hoặc dán URL, bài hát được thêm vào danh sách |
+| ▶ **Phát tự động**            | Sau khi bài hiện tại kết thúc → phát tiếp bài kế tiếp                  |
+| 🖱 **Chọn bài thủ công**      | Người dùng có thể click vào bài trong danh sách để phát                |
+| 🔁 **Vòng lặp**               | Khi đến cuối danh sách → tự động quay lại bài đầu tiên                 |
+| ✨ **Highlight bài đang phát** | Bài đang phát được tô sáng bằng hiệu ứng `active glow`                 |
+
+> 🎯 Playlist được thiết kế nhẹ, không phụ thuộc framework — dễ mở rộng thêm tính năng sau này.
+
+---
+
+### ⌨️ 2.7. Phím tắt
 
 | Phím      | Hành động        |
 | --------- | ---------------- |
@@ -100,11 +114,11 @@ Giao diện theo phong cách **Glassmorphism + Glow UI**, tạo cảm giác mề
 
 ---
 
-### 💡 2.7. Trạng thái hiển thị
+### 💡 2.8. Trạng thái hiển thị
 
-* Nút **Play/Pause** tự động đổi icon
-* Tiến trình, thời gian và tốc độ cập nhật **real-time**
-* Khi bài nhạc kết thúc → reset về ban đầu
+* Nút **Play/Pause** tự đổi icon
+* Tiến trình, thời gian, tốc độ và playlist cập nhật **real-time**
+* Khi bài hát kết thúc → chuyển bài tiếp theo hoặc quay lại đầu danh sách
 
 ---
 
@@ -112,8 +126,8 @@ Giao diện theo phong cách **Glassmorphism + Glow UI**, tạo cảm giác mề
 
 * **Glassmorphism:** nền mờ, viền sáng nhẹ
 * **Glow Effect:** ánh sáng neon xanh `#38bdf8`
-* **Responsive:** tự co giãn trên màn hình nhỏ, ẩn bớt thông tin khi <520px
-* **Layout:** gọn gàng, cân đối, trực quan
+* **Responsive:** tự co giãn trên màn hình nhỏ
+* **Bố cục:** cân đối, tập trung vào trải nghiệm người dùng
 
 ---
 
@@ -123,8 +137,8 @@ Giao diện theo phong cách **Glassmorphism + Glow UI**, tạo cảm giác mề
 audio-tool/
 │
 ├── audio-tool.html       # File chính (HTML + JS)
-├── audio-style.css        # File CSS (Glassmorphism + Glow)
-└── AUDIO_TOOL.md          # File mô tả & changelog
+├── audio-style.css       # File CSS (Glassmorphism + Glow)
+└── AUDIO_TOOL.md         # File mô tả & changelog
 ```
 
 ---
@@ -132,10 +146,10 @@ audio-tool/
 ## 🔮 5. Hướng phát triển
 
 * [ ] Equalizer hiển thị sóng âm (Visualizer)
-* [ ] Hỗ trợ Playlist (nhiều bài nhạc liên tiếp)
+* [x] Playlist (đã hoàn thành v1.2)
 * [x] Điều chỉnh tốc độ phát (hoàn thành v1.1)
 * [ ] Lưu lịch sử bài hát (LocalStorage)
 * [ ] Thêm chế độ Dark / Light
+* [ ] Giao diện Drag & Drop thêm bài vào playlist
 
 ---
-

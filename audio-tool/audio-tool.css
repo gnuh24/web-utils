@@ -218,6 +218,40 @@
     font-weight: 600;
     margin: 0 2px;
   }
+
+  .playlist-container {
+    margin-top: 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.playlist-container h3 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    color: var(--accent);
+}
+
+#playlist li {
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    list-style: none;
+    margin-bottom: 4px;
+}
+
+#playlist li:hover {
+    background: rgba(56,189,248,0.3);
+}
+
+#playlist li.active {
+    background: rgba(56,189,248,0.6);
+    font-weight: 600;
+}
+
   
   @media (max-width: 520px) {
     .ctrl-btn {
@@ -228,6 +262,68 @@
     #play.ctrl-btn {
       width: 52px;
       height: 52px;
+    }
+  }
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 22px 0 18px;
+  }
+  
+  .ctrl-btn {
+    min-width: 70px;
+    height: 44px;
+    padding: 0 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+  }
+  
+  .ctrl-btn:hover {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: #02131d;
+    box-shadow: var(--glow);
+  }
+  
+  #play.ctrl-btn {
+    min-width: 60px;
+    height: 50px;
+    font-size: 20px;
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: #02131d;
+    box-shadow: var(--glow);
+    border-radius: 14px;
+  }
+  
+  #play.ctrl-btn:hover {
+    box-shadow: var(--glow-strong);
+    transform: scale(1.05);
+  }
+  
+  /* Responsive */
+  @media (max-width: 520px) {
+    .ctrl-btn {
+      min-width: 60px;
+      height: 40px;
+      font-size: 13px;
+      padding: 0 8px;
+    }
+    #play.ctrl-btn {
+      min-width: 50px;
+      height: 44px;
+      font-size: 16px;
     }
   }
   

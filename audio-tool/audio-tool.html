@@ -26,11 +26,15 @@
 
         <!-- Nút điều khiển -->
         <div class="controls">
-            <div id="rew5" class="ctrl-btn" title="← Tua ngược 5s">⏪</div>
+            <div id="prevTrack" class="ctrl-btn" title="Bài trước">Prev ⏮</div>
+            <div id="rew5" class="ctrl-btn" title="← Tua ngược 5s">-5s</div>
             <div id="play" class="ctrl-btn" title="Play/Pause (Space)">▶</div>
-            <div id="fwd5" class="ctrl-btn" title="→ Tua nhanh 5s">⏩</div>
-            <div id="stop" class="ctrl-btn" title="Dừng (S)">⏹</div>
+            <div id="fwd5" class="ctrl-btn" title="→ Tua nhanh 5s">+5s</div>
+            <div id="nextTrack" class="ctrl-btn" title="Bài tiếp theo">⏭ Next</div>
+            <div id="stop" class="ctrl-btn" title="Dừng (S)">⏹ Stop</div>
         </div>
+
+
 
         <!-- Điều chỉnh âm lượng & tốc độ -->
         <div class="vol-controls">
@@ -74,7 +78,13 @@
             </div>
             <div>Kéo thanh để tua nhanh</div>
         </div>
+        <!-- Playlist -->
+        <div class="playlist-container">
+            <h3>📜 Playlist</h3>
+            <ul id="playlist"></ul>
+        </div>
     </div>
+
 
     <script>
         const audio = document.getElementById('audio');
@@ -112,6 +122,77 @@
         speedSelect.addEventListener('change', () => {
             updateSpeed(parseFloat(speedSelect.value));
         });
+
+
+        const playlist = document.getElementById('playlist');
+        let tracks = []; // mảng lưu file hoặc URL
+        let currentIndex = 0;
+
+        // Thêm file vào playlist
+        fileInput.addEventListener('change', e => {
+            const files = Array.from(e.target.files);
+            files.forEach(f => {
+                tracks.push({ name: f.name, src: URL.createObjectURL(f) });
+            });
+            renderPlaylist();
+            playTrack(currentIndex);
+        });
+
+        // Tải URL vào playlist
+        loadUrlBtn.addEventListener('click', () => {
+            const u = urlInput.value.trim();
+            if (!u) return alert('Hãy nhập URL hợp lệ.');
+            const name = u.split('/').pop() || `Track ${tracks.length + 1}`;
+            tracks.push({ name, src: u });
+            renderPlaylist();
+            playTrack(currentIndex);
+        });
+
+        // Render playlist
+        function renderPlaylist() {
+            playlist.innerHTML = '';
+            tracks.forEach((t, i) => {
+                const li = document.createElement('li');
+                li.textContent = t.name;
+                li.className = i === currentIndex ? 'active' : '';
+                li.addEventListener('click', () => {
+                    currentIndex = i;
+                    playTrack(currentIndex);
+                });
+                playlist.appendChild(li);
+            });
+        }
+
+        // Phát track theo index
+        function playTrack(index) {
+            if (!tracks[index]) return;
+            audio.src = tracks[index].src;
+            audio.play();
+            renderPlaylist();
+        }
+
+        // Khi bài hát kết thúc, tự động phát bài tiếp theo
+        audio.addEventListener('ended', () => {
+            currentIndex = (currentIndex + 1) % tracks.length;
+            playTrack(currentIndex);
+        });
+
+        const prevTrackBtn = document.getElementById('prevTrack');
+        const nextTrackBtn = document.getElementById('nextTrack');
+
+        prevTrackBtn.addEventListener('click', () => {
+            if (tracks.length === 0) return;
+            currentIndex = (currentIndex - 1 + tracks.length) % tracks.length;
+            playTrack(currentIndex);
+        });
+
+        nextTrackBtn.addEventListener('click', () => {
+            if (tracks.length === 0) return;
+            currentIndex = (currentIndex + 1) % tracks.length;
+            playTrack(currentIndex);
+        });
+
+
 
         // Định dạng thời gian
         function formatTime(s) {
